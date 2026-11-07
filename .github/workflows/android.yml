@@ -17,23 +17,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'gradle'
 
-      - name: Build Web App
+      - name: Install dependencies & Build Web App
         run: |
-          npm install
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm ci
           npx vite build --base=./
 
-      - name: Clean and Re-initialize Capacitor Android
+      - name: Sync Capacitor Android
         run: |
-          rm -rf android
-          npx cap add android
+          # If you commit the android folder, use sync. 
+          # Keep 'npx cap add android' only if the folder is ignored in git.
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
           npx cap sync android
 
       - name: Build Debug APK with Gradle
