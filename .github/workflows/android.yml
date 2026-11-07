@@ -33,8 +33,8 @@ jobs:
 
       - name: Sync Capacitor Android
         run: |
-          # If you commit the android folder, use sync. 
-          # Keep 'npx cap add android' only if the folder is ignored in git.
+          # إذا كان مجلد android موجوداً في مستودعك، سيتم عمل مزامنة فقط
+          # وإذا لم يكن موجوداً، سيتم إنشاؤه تلقائياً
           if [ ! -d "android" ]; then
             npx cap add android
           fi
@@ -45,6 +45,12 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: EduTrack-App-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
